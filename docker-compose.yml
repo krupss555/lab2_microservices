@@ -1,0 +1,33 @@
+version: "3.8"
+services:
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    ports:
+      - "3001:3001"
+    networks:
+      - my-network
+
+  post-service:
+    build: ./post-service
+    container_name: post-service
+    ports:
+      - "3002:3002"
+    networks:
+      - my-network
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - user-service
+      - post-service
+    networks:
+      - my-network
+
+networks:
+  my-network:
